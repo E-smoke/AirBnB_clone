@@ -75,6 +75,33 @@ class HBNBCommand(cmd.Cmd):
             del d[key]
             storage.save()
 
+    def do_all(self, line):
+        """ Prints all string representation of all instances
+        based or not on the class name. Ex: $all BaseModel or $ all."""
+        list_cls = []
+        if line:
+            if line not in self.BaseModel_Subcls:
+                print("** class doesn't exist **")
+            else:
+                cls = self.BaseModel_Subcls[line]
+                d = copy.deepcopy(storage.all())
+                for key in d:
+                    cls_cmp = d[key]["__class__"]
+                    cls_cmp = self.BaseModel_Subcls[cls_cmp]
+                    if issubclass(cls_cmp, cls):
+                        obj = cls_cmp(d[key])
+                        string = str(obj)
+                        list_cls.append(string)
+        else:
+            d = copy.deepcopy(storage.all())
+            for key in d:
+                cls = d[key]["__class__"]
+                cls = self.BaseModel_Subcls[cls]
+                obj = cls(d[key])
+                string = str(obj)
+                list_cls.append(string)
+        print(list_cls)
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
