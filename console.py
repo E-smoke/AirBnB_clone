@@ -5,12 +5,13 @@ import cmd
 import datetime
 import copy
 from models.base_model import BaseModel
+from models.user import User
 from models import storage
 
 
 class HBNBCommand(cmd.Cmd):
     """console class"""
-    BaseModel_Subcls = {"BaseModel": BaseModel}
+    BaseModel_Subcls = {"BaseModel": BaseModel, "User": User}
     prompt = "(hbnb)"
 
     def do_quit(self, arg):
