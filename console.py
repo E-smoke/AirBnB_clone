@@ -52,10 +52,8 @@ class HBNBCommand(cmd.Cmd):
         else:
             key = args[0] + "." + args[1]
             d = copy.deepcopy(storage.all()[key])
-            d["created_at"] = datetime.datetime.fromisoformat(d["created_at"])
-            d["updated_at"] = datetime.datetime.fromisoformat(d["updated_at"])
             cls = self.BaseModel_Subcls[args[0]]
-            obj = cls(d)
+            obj = cls(**d)
             print(obj)
 
     def do_destroy(self, line):
@@ -89,7 +87,7 @@ class HBNBCommand(cmd.Cmd):
                     cls_cmp = d[key]["__class__"]
                     cls_cmp = self.BaseModel_Subcls[cls_cmp]
                     if issubclass(cls_cmp, cls):
-                        obj = cls_cmp(d[key])
+                        obj = cls_cmp(**d[key])
                         string = str(obj)
                         list_cls.append(string)
         else:
@@ -97,10 +95,39 @@ class HBNBCommand(cmd.Cmd):
             for key in d:
                 cls = d[key]["__class__"]
                 cls = self.BaseModel_Subcls[cls]
-                obj = cls(d[key])
+                obj = cls(**d[key])
                 string = str(obj)
                 list_cls.append(string)
         print(list_cls)
+
+    def do_update(self, line):
+        """ Updates an instance based on the class name
+            and id by adding or updating attribute
+            (save the change into the JSON file).
+            Ex: $ update BaseModel 1234-1234-1234 email 'aibnb@mail.com'.
+            Usage:update <class name> <id> <attribute name> '<attribute value>'
+            """
+        args = line.split()
+        if len(args) < 1:
+            print("** class name missing **")
+        elif args[0] not in self.BaseModel_Subcls:
+            print("** class doesn't exist **")
+        elif len(args) < 2:
+            print("** instance id missing **")
+        elif args[0] + "." + args[1] not in storage.all():
+            print("** no instance found **")
+        elif len(args) < 3:
+            print("** attribute name missing **")
+        elif len(args) < 4:
+            print("** value missing **")
+        else:
+            key = args[0] + "." + args[1]
+            d = storage.all()[key]
+            cls = self.BaseModel_Subcls[args[0]]
+            value = eval(args[3])
+            d[args[2]] = value
+            obj = cls(**copy.deepcopy(d))
+            obj.save()
 
 
 if __name__ == "__main__":
