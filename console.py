@@ -143,6 +143,18 @@ class HBNBCommand(cmd.Cmd):
             obj = cls(**copy.deepcopy(d))
             obj.save()
 
+    def default(self, line):
+        cls, rest = line.split('.')
+        funct, rest = rest.split('(')
+        rest = rest.replace(',', '')
+        rest = rest.replace(')', '')
+        args = cls
+        if rest:
+            args = cls + ' ' + rest
+        funct = 'do_' + funct
+        funct = getattr(self, funct)
+        funct(args)
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
