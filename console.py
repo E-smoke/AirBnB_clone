@@ -133,10 +133,7 @@ class HBNBCommand(cmd.Cmd):
         elif len(args) < 3:
             print("** attribute name missing **")
         elif len(args) < 4:
-            key = args[0] + "." + args[1]
-            d = storage.all()[key]
-            value = eval(args[2])
-            d.update(value)
+            print("** value missing **")
         else:
             key = args[0] + "." + args[1]
             d = storage.all()[key]
