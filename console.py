@@ -155,6 +155,14 @@ class HBNBCommand(cmd.Cmd):
         funct = getattr(self, funct)
         funct(args)
 
+    def do_count(self, line):
+        count = 0
+        d = copy.deepcopy(storage.all())
+        for key in d:
+            if d[key]["__class__"] == line:
+                count += 1
+        print(count)
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
